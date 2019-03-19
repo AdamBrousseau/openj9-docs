@@ -197,7 +197,7 @@ def push_doc(REPO, BRANCH, SHA) {
         sh 'git config user.email "openj9-bot@eclipse.org"'
         sh 'git add .'
         sh "git commit -m 'Generated from commit: ${SHA}'"
-        sh "git push ${REPO} ${BRANCH}"
+        echo "git push ${REPO} ${BRANCH}"
     }
 }
 
