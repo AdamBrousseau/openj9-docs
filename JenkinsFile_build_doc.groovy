@@ -86,9 +86,12 @@ timeout(time: 6, unit: 'HOURS') {
                                     branches: [[name: CLONE_BRANCH]],
                                     userRemoteConfigs: [[refspec: REFSPEC, url: "${HTTP}${OPENJ9_REPO}"]]]
 
+                            echo "here"
                             if (GET_SHA) {
+                                echo "here1"
                                 MERGE_COMMIT = sh (script: 'git rev-parse HEAD', returnStdout: true).trim()
                             }
+                            echo "here2"
                             COMMIT_MSG = sh (script: 'git log -1 --oneline', returnStdout: true).trim()
                             echo "COMMIT_MSG:'${COMMIT_MSG}'"
                             echo "COMMIT_SHA:'${MERGE_COMMIT}'"
