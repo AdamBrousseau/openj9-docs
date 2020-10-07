@@ -22,6 +22,7 @@
  *******************************************************************************/
 
 def parentBuildName = 'Pipeline-Build-Javadoc'
+parentBuildName = 'Pipeline-Build-Test-Personal'
 
 
 
