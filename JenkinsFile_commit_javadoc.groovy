@@ -67,12 +67,15 @@ timeout(time: 6, unit: 'HOURS') {
                 println buildenv.class
                 error('no')
                 */
-
+                println builds
 
                 def TMP_DESC = (currentBuild.description) ? currentBuild.description + "<br>" : ""
                 currentBuild.description = TMP_DESC + "<a href=${JENKINS_URL}computer/${NODE_NAME}>${NODE_NAME}</a>"
 
                 for (build in builds) {
+                    println build
+                    println build[name]
+                    println build[number]
                     def job =  Jenkins.instance.getItemByFullName(build[name])
                     def run = job.getBuildByNumber(build[number])
                     def runEnv = run.getBuildVariables()
