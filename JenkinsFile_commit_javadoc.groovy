@@ -77,7 +77,7 @@ timeout(time: 6, unit: 'HOURS') {
                     println build['name']
                     println build['number']
                     def job =  Jenkins.instance.getItemByFullName(build['name'])
-                    def run = job.getBuildByNumber(build['number'])
+                    def run = job.getBuildByNumber(build['number'].toInteger())
                     def runEnv = run.getBuildVariables()
                     println runEnv
                     println runEnv.class
