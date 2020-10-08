@@ -83,8 +83,8 @@ timeout(time: 6, unit: 'HOURS') {
             } catch(e) {
                 if (!params.ghprbPullId) {
                     // Set status on the Github commit for non PR builds
-                    setBuildStatus("${HTTP}${OPENJ9_REPO}", MERGE_COMMIT, 'FAILURE', 'Failed to build and push doc')
-                    slackSend channel: '#jenkins', color: 'danger', message: "Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+                    //setBuildStatus("${HTTP}${OPENJ9_REPO}", MERGE_COMMIT, 'FAILURE', 'Failed to build and push doc')
+                    slackSend channel: '@adam.brousseau', color: 'danger', message: "Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
                 }
                 throw e
             } finally {
