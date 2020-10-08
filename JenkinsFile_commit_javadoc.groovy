@@ -80,7 +80,7 @@ timeout(time: 6, unit: 'HOURS') {
                     println job
                     def run = job.getBuildByNumber(build['number'].toInteger())
                     println run
-                    def runEnv = run.getBuildVariables()
+                    def runEnv = run.getEnvironmant()
                     println runEnv
                     println runEnv.class
                 }
