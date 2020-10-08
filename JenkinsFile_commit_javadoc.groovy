@@ -74,10 +74,10 @@ timeout(time: 6, unit: 'HOURS') {
 
                 for (build in builds) {
                     println build
-                    println build[name]
-                    println build[number]
-                    def job =  Jenkins.instance.getItemByFullName(build[name])
-                    def run = job.getBuildByNumber(build[number])
+                    println build['name']
+                    println build['number']
+                    def job =  Jenkins.instance.getItemByFullName(build['name'])
+                    def run = job.getBuildByNumber(build['number'])
                     def runEnv = run.getBuildVariables()
                     println runEnv
                     println runEnv.class
