@@ -23,7 +23,12 @@
 
 def parentBuildName = 'Pipeline-Build-Javadoc'
 parentBuildName = 'Pipeline-Build-Test-Personal'
-
+def java8BuildName = params.JAVA8_BUILD_NAME ?: 'Build_JDK8_s390x_linux_Personal'
+def java11BuildName = params.JAVA11_BUILD_NAME ?: 'Build_JDK11_s390x_linux_Personal'
+def builds = [
+    [name: java8BuildName, number: params.JAVA8_BUILD_NUMBER],
+    [name: java11BuildName, number: params.JAVA11_BUILD_NUMBER]
+]
 
 
 
@@ -46,24 +51,34 @@ timeout(time: 6, unit: 'HOURS') {
     timestamps {
         node('worker') {
             try {
+                // TODO: Get latest builds programatically
+                /*
                 def parentBuild = Jenkins.instance.getItemByFullName(parentBuildName)
                 println parentBuild
-                println parentBuild.class
+                println parentBuild.class // org.jenkinsci.plugins.workflow.job.WorkflowJob
                 def lastSuccess = parentBuild.getLastSuccessfulBuild()
                 println lastSuccess
-                println lastSuccess.class
-
+                println lastSuccess.class // org.jenkinsci.plugins.workflow.job.WorkflowRun
+                */
+                /*
 
                 def buildEnv = lastSuccess.getBuildVariables()
                 println buildenv
                 println buildenv.class
                 error('no')
-
+                */
 
 
                 def TMP_DESC = (currentBuild.description) ? currentBuild.description + "<br>" : ""
                 currentBuild.description = TMP_DESC + "<a href=${JENKINS_URL}computer/${NODE_NAME}>${NODE_NAME}</a>"
 
+                for (build in builds) {
+                    def job =  Jenkins.instance.getItemByFullName(build[name])
+                    def run = job.getBuildByNumber(build[number])
+                    def runEnv = run.getBuildVariables()
+                    println runEnv
+                    println runEnv.class
+                }
 
             } catch(e) {
                 if (!params.ghprbPullId) {
