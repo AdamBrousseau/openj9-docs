@@ -26,8 +26,8 @@ parentBuildName = 'Pipeline-Build-Test-Personal'
 def java8BuildName = params.JAVA8_BUILD_NAME ?: 'Build_JDK8_s390x_linux_Personal'
 def java11BuildName = params.JAVA11_BUILD_NAME ?: 'Build_JDK11_s390x_linux_Personal'
 def builds = [
-    [name: java8BuildName, number: params.JAVA8_BUILD_NUMBER],
-    [name: java11BuildName, number: params.JAVA11_BUILD_NUMBER]
+    [name: java8BuildName, number: params.JAVA8_BUILD_NUMBER, url: params.JAVA8_API_DOC_URL, version: '8'],
+    [name: java11BuildName, number: params.JAVA11_BUILD_NUMBER, url: params.JAVA11_API_DOC_URL, version: '11']
 ]
 
 
@@ -67,6 +67,8 @@ timeout(time: 6, unit: 'HOURS') {
                 println buildenv.class
                 error('no')
                 */
+
+                checkout scm
                 println builds
 
                 def TMP_DESC = (currentBuild.description) ? currentBuild.description + "<br>" : ""
@@ -84,7 +86,20 @@ timeout(time: 6, unit: 'HOURS') {
                     def runEnv = run.getEnvironment()
                     println runEnv
                     println runEnv.class
+
+                    dir(build['name']) {
+                        sh """
+                            curl -OLJk ${build['url']}
+                            tar zxf OpenJ9*
+                            ls -al openj9-docs
+                            cp -r openj9-docs/api/* ${WORKSPACE}/api/jdk${build['version']}/
+                            git status
+                        """
+
+                    }
                 }
+
+
 
             } catch(e) {
                 if (!params.ghprbPullId) {
