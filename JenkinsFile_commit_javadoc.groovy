@@ -38,24 +38,12 @@ def builds = [
     sourcePath: 'openj9-docs/api']
 ]
 
-apiDocSourcePath = [:]
-apiDocSourcePath['8'] = 'openj9-docs'
-apiDocSourcePath['11'] = 'openj9-docs/api'
+def http = 'https://'
+def docRepo = 'github.com/eclipse/openj9-docs.git'
+def docBranch = (params.BRANCH) ?: 'master'
+def credID = 'b6987280-6402-458f-bdd6-7affc2e360d4'
 
-
-NAMESPACE = 'eclipse'
-CONTAINER_NAME = 'openj9-docs'
-ARCHIVE = 'doc.tar.gz'
-HTTP = 'https://'
-OPENJ9_REPO = 'github.com/eclipse/openj9-docs'
-OPENJ9_STAGING_REPO = 'github.com/eclipse/openj9-docs-staging'
-ECLIPSE_REPO = 'ssh://genie.openj9@git.eclipse.org:29418/www.eclipse.org/openj9/docs.git'
-SSH_CREDENTIAL_ID = 'git.eclipse.org-bot-ssh'
-
-BUILD_DIR = 'built_doc'
-CREDENTIAL_ID = 'b6987280-6402-458f-bdd6-7affc2e360d4'
-
-
+def repoDir = 'openj9-docs'
 
 timeout(time: 6, unit: 'HOURS') {
     timestamps {
@@ -78,9 +66,10 @@ timeout(time: 6, unit: 'HOURS') {
                 error('no')
                 */
 
-                checkout scm
-                sh 'ls -al'
-                println builds
+                dir(repoDir) {
+                    git url: "${http}${docRepo}", branch: docBranch, changelog: false, poll: false
+                    sh 'git status'
+                }
 
                 def TMP_DESC = (currentBuild.description) ? currentBuild.description + "<br>" : ""
                 currentBuild.description = TMP_DESC + "<a href=${JENKINS_URL}computer/${NODE_NAME}>${NODE_NAME}</a>"
@@ -102,11 +91,13 @@ timeout(time: 6, unit: 'HOURS') {
                         sh """
                             curl -OLJk ${build['url']}
                             tar zxf OpenJ9*
-                            cp -r ${build['sourcePath']}/* ${WORKSPACE}/docs/api/jdk${build['version']}/
-                            git status
+                            cp -r ${build['sourcePath']}/* ${WORKSPACE}/${repoDir}/docs/api/jdk${build['version']}/
                         """
-
                     }
+                }
+
+                dir(repoDir) {
+                    sh 'git status'
                 }
 
 
